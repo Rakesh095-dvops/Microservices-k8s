@@ -1,11 +1,11 @@
 # Microservices-Task
 
 ## Overview
-This document provides details on testing various services after running the `docker-compose` file. These services include User, Product, Order, and Gateway Services. Each service has its own endpoints for testing purposes.
+This document provides details of microservices application on Kubernetes using Minikube, ensuring proper service communication and configuration. These services include User, Product, Order, and Gateway Services. Each service has its own endpoints for testing purposes.
 
 ---
 
-## Services and Endpoints
+## 1. Services and Endpoints local testing 
 
 ### **User Service**
 - **Base URL:** `http://localhost:3000`
@@ -58,15 +58,63 @@ This document provides details on testing various services after running the `do
 
 ---
 
-## Instructions
-1. Start all services using the `docker-compose` file:
+## 2. Instructions how to set up and test K8s using miniKube
+1. Start Minikube (if not already running):
+   ```bash
+   minikube start
    ```
-   docker-compose up
-   ```
-2. Once the services are running, use the above endpoints to verify the functionality.
+2. Set the namespace (if it doesn't exist):
+    ```bash
+    kubectl create namespace rik8s
+    ````
+3. Apply the deployment manifest:
 
-Happy testing!
+    ```bash
+    kubectl apply -f .\user-deployments.yaml
+    kubectl apply -f .\product-deployments.yaml 
+    kubectl apply -f .\order-deployments.yaml
+    kubectl apply -f .\gateway-deployments.yaml
+    ````
+4. Apply the service manifest:
 
-## Solution 
+    ```bash
+    kubectl apply -f .\user-service.yaml
+    kubectl apply -f .\product-service.yaml
+    kubectl apply -f .\order-service.yaml
+    kubectl apply -f .\gateway-service.yaml   
+    ````
+5. Check the status of your deployment ,services and pods :
+    ```bash
+    # add -o wide for details like kubectl get deployments -n rik8s -o wide
+    kubectl get deployments -n rik8s
+    kubectl get pods -n rik8s
+    kubectl get svc -n rik8s
+    
+    ```
+6. Expose or access the user / product / order service :
+  - If using Ingress, make sure your Ingress is applied and configured.
+    Or, port-forward for local testing:
 
-For solution and detailed steps refer [Solution Documentation]()
+    ```bash
+    kubectl port-forward svc/user-service 3000:3000 -n rik8s
+    kubectl port-forward svc/product-service 3001:3001 -n rik8s
+    kubectl port-forward svc/order-service  3002:3002 -n rik8s
+    ```
+7. Expose the Gateway Service for Local Testing
+    Since you are using Minikube, use `minikube service` to access the LoadBalancer service:
+    ```bash
+    minikube service gateway-service -n rik8s
+    ``` 
+8. Run `minikube dashboard` to get information using UI as well
+## 3. Demo
+
+1. k8s Services details 
+![alt text](Submission/screenshots/k8s_avilability_status.png)
+
+2. All services are up and running including gateway API . 
+ ![alt text](Submission/screenshots/2_microservices_run.png)
+ - run `minikube service {details}`
+  ![alt text](Submission/screenshots/1_Gateway_service.png)
+ - Gateway api testing using `curl`
+  ![alt text](Submission/screenshots/3_gateway_services.png)
+
