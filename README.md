@@ -1,42 +1,39 @@
 # Microservices-Task
 
 ## Overview
-This document provides details of microservices application on Kubernetes using Minikube, ensuring proper service communication and configuration. These services include User, Product, Order, and Gateway Services. Each service has its own endpoints for testing purposes.
+This document details deploying a microservices application on Kubernetes using Minikube. The stack includes User, Product, Order, and Gateway services, each with its own endpoints for testing.
 
 ---
 
-## 1. Services and Endpoints local testing 
+## 1. Local Testing of Services and Endpoints
 
 ### **User Service**
 - **Base URL:** `http://localhost:3000`
-- **Endpoints:**
-  - **List Users:**  
-    ```
-    curl http://localhost:3000/users
-    ```
-    Or open in your browser: [http://localhost:3000/users](http://localhost:3000/users)
+- **List Users:**  
+  ```bash
+  curl http://localhost:3000/users
+  ```
+  Or open: [http://localhost:3000/users](http://localhost:3000/users)
 
 ---
 
 ### **Product Service**
 - **Base URL:** `http://localhost:3001`
-- **Endpoints:**
-  - **List Products:**  
-    ```
-    curl http://localhost:3001/products
-    ```
-    Or open in your browser: [http://localhost:3001/products](http://localhost:3001/products)
+- **List Products:**  
+  ```bash
+  curl http://localhost:3001/products
+  ```
+  Or open: [http://localhost:3001/products](http://localhost:3001/products)
 
 ---
 
 ### **Order Service**
 - **Base URL:** `http://localhost:3002`
-- **Endpoints:**
-  - **List Orders:**  
-    ```
-    curl http://localhost:3002/orders
-    ```
-    Or open in your browser: [http://localhost:3002/orders](http://localhost:3002/orders)
+- **List Orders:**  
+  ```bash
+  curl http://localhost:3002/orders
+  ```
+  Or open: [http://localhost:3002/orders](http://localhost:3002/orders)
 
 ---
 
@@ -44,98 +41,118 @@ This document provides details of microservices application on Kubernetes using 
 - **Base URL:** `http://localhost:3003/api`
 - **Endpoints:**
   - **Users:**  
-    ```
+    ```bash
     curl http://localhost:3003/api/users
     ```
   - **Products:**  
-    ```
+    ```bash
     curl http://localhost:3003/api/products
     ```
   - **Orders:**  
-    ```
+    ```bash
     curl http://localhost:3003/api/orders
     ```
 
 ---
 
-## 2. Instructions how to set up and test K8s using miniKube
-1. Start Minikube (if not already running):
+## 2. Kubernetes Setup & Testing with Minikube
+
+1. **Start Minikube:**
    ```bash
    minikube start
    ```
-2. Set the namespace (if it doesn't exist):
-    ```bash
-    kubectl create namespace rik8s
-    ````
-3. Apply the deployment manifest:
 
-    ```bash
-    kubectl apply -f .\user-deployments.yaml
-    kubectl apply -f .\product-deployments.yaml 
-    kubectl apply -f .\order-deployments.yaml
-    kubectl apply -f .\gateway-deployments.yaml
-    ````
-4. Apply the service manifest:
+2. **Create Namespace (if not exists):**
+   ```bash
+   kubectl create namespace rik8s
+   ```
 
-    ```bash
-    kubectl apply -f .\user-service.yaml
-    kubectl apply -f .\product-service.yaml
-    kubectl apply -f .\order-service.yaml
-    kubectl apply -f .\gateway-service.yaml   
-    ````
-5. Check the status of your deployment ,services and pods :
-    ```bash
-    # add -o wide for details like kubectl get deployments -n rik8s -o wide
-    kubectl get deployments -n rik8s
-    kubectl get pods -n rik8s
-    kubectl get svc -n rik8s
-    
-    ```
-6. Expose or access the user / product / order service :
-  - If using Ingress, make sure your Ingress is applied and configured.
-    Or, port-forward for local testing:
+3. **Apply Deployment Manifests:**
+   ```bash
+   kubectl apply -f .\user-deployments.yaml
+   kubectl apply -f .\product-deployments.yaml 
+   kubectl apply -f .\order-deployments.yaml
+   kubectl apply -f .\gateway-deployments.yaml
+   ```
 
-    ```bash
-    kubectl port-forward svc/user-service 3000:3000 -n rik8s
-    kubectl port-forward svc/product-service 3001:3001 -n rik8s
-    kubectl port-forward svc/order-service  3002:3002 -n rik8s
-    ```
-7. Expose the Gateway Service for Local Testing
-    Since you are using Minikube, use `minikube service` to access the LoadBalancer service:
-    ```bash
-    minikube service gateway-service -n rik8s
-    ``` 
-8. Run `minikube dashboard` to get information using UI as well
+4. **Apply Service Manifests:**
+   ```bash
+   kubectl apply -f .\user-service.yaml
+   kubectl apply -f .\product-service.yaml
+   kubectl apply -f .\order-service.yaml
+   kubectl apply -f .\gateway-service.yaml   
+   ```
+
+5. **Check Status of Deployments, Services, and Pods:**
+   ```bash
+   kubectl get deployments -n rik8s
+   kubectl get pods -n rik8s
+   kubectl get svc -n rik8s
+   kubectl get rs -n rik8s
+   ```
+
+6. **Access User/Product/Order Services:**
+   - If using Ingress, ensure it is applied and configured.
+   - For local testing, use port-forward:
+     ```bash
+     kubectl port-forward svc/user-service 3000:3000 -n rik8s
+     kubectl port-forward svc/product-service 3001:3001 -n rik8s
+     kubectl port-forward svc/order-service  3002:3002 -n rik8s
+     ```
+
+7. **Expose Gateway Service for Local Testing:**
+   - With Minikube, use:
+     ```bash
+     minikube service gateway-service -n rik8s
+     ```
+   - Or, if using NodePort, access via Minikube IP and NodePort (see below).
+
+8. **Optional: Launch Minikube Dashboard**
+   ```bash
+   minikube dashboard
+   ```
+
+---
+
 ## 3. Demo
 
-1. k8s Services details 
-![alt text](Submission/screenshots/k8s_avilability_status.png)
+1. **K8s Services Overview:**  
+   ![K8s Availability Status](Submission/screenshots/k8s_avilability_status.png)
 
-2. All services are up and running including gateway API . 
- ![alt text](Submission/screenshots/2_microservices_run.png)
- - run `minikube service {details}`
-  ![alt text](Submission/screenshots/1_Gateway_service.png)
- - Gateway api testing using `curl`
-  ![alt text](Submission/screenshots/3_gateway_services.png)
+2. **All Services Running:**  
+   ![Microservices Running](Submission/screenshots/2_microservices_run.png)
 
-**Notes**
->The EXTERNAL-IP for your gateway-service is showing <pending> because we are using the LoadBalancer service type, but  Kubernetes cluster (likely Minikube or a local setup) does not have a cloud load balancer integration.
+3. **Gateway Service running using minikube:**  
+   ![Gateway Service](Submission/screenshots/1_Gateway_service.png)
 
->Change to NodePort Edit your service YAML to use ```NodePort``` instead:
-```yaml
-# ...existing code...
-spec:
-  type: NodePort
-  selector:
-    app: gateway-service
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3003
-    nodePort: 31417 # optional, or let Kubernetes assign
-# ...existing code...
-```
-Then access it at : `minikube ip`
-```bash
-http://<minikube-ip>:31417/
-```
+4. **Gateway API Testing with `curl`:**  
+   ![Gateway Services](Submission/screenshots/3_gateway_services.png)
+
+---
+
+## Notes
+
+- If the `EXTERNAL-IP` for your `gateway-service` shows `<pending>`, it's because the `LoadBalancer` type requires a cloud provider. Minikube does not provide a cloud load balancer by default.
+- **Solution:** Change the service type to `NodePort` in your `gateway-service.yaml`:
+
+  ```yaml
+  spec:
+    type: NodePort
+    selector:
+      app: gateway-service
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 3003
+        nodePort: 31417 # optional, or let Kubernetes assign
+  ```
+
+- **Access the Gateway Service:**  
+  Get your Minikube IP:
+  ```bash
+  minikube ip
+  ```
+  Then open in your browser:
+  ```
+  http://<minikube-ip>:31417/
+  ```
