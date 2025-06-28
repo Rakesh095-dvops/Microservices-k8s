@@ -118,3 +118,24 @@ This document provides details of microservices application on Kubernetes using 
  - Gateway api testing using `curl`
   ![alt text](Submission/screenshots/3_gateway_services.png)
 
+**Notes**
+>The EXTERNAL-IP for your gateway-service is showing <pending> because we are using the LoadBalancer service type, but  Kubernetes cluster (likely Minikube or a local setup) does not have a cloud load balancer integration.
+
+>Change to NodePort Edit your service YAML to use ```NodePort``` instead:
+```yaml
+# ...existing code...
+spec:
+  type: NodePort
+  selector:
+    app: gateway-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3003
+    nodePort: 31417 # optional, or let Kubernetes assign
+# ...existing code...
+```
+Then access it at : `minikube ip`
+```bash
+http://<minikube-ip>:31417/
+```
