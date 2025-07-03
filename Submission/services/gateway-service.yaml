@@ -4,12 +4,9 @@ metadata:
   name: gateway-service
   namespace: rik8s
 spec:
-  # LoadBalancer will create an external load balancer in a cloud environment (like AWS EKS)
-  # to expose the gateway service to the internet.
-  type: LoadBalancer 
   selector:
     app: gateway-service
   ports:
   - protocol: TCP
-    port: 80 # The port the load balancer will listen on
+    port: 80         # The port your Ingress will forward to
     targetPort: 3003 # The port on the gateway container

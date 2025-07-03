@@ -156,3 +156,5 @@ This document details deploying a microservices application on Kubernetes using 
   ```
   http://<minikube-ip>:31417/
   ```
+---
+## Ingress work-in progress
